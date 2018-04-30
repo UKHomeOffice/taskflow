@@ -122,9 +122,7 @@ It would be expected that hook functions return promises.
 
 ### Plugins
 
-Plugins should be able to extend the record object with their own helper methods to perform other tasks.
-
-Example plugin usage:
+In this example, the "SLA" plugin might create a hook on the `create` event, which would set a "due date" property on the record:
 
 ```js
 const SLA = require('taskflow-plugin-sla');
@@ -136,4 +134,17 @@ const sla = SLA({
 flow.plugin(sla);
 ```
 
-In the example above, this might create a hook on the `create` event, which would set a "due date" property on the record.
+Plugins should be able to extend the record object with their own helper methods to perform other tasks:
+
+```js
+// reset the timer on a record when it changes state
+flow.hook('state:*', (event, record) => record.sla().reset());
+```
+
+Plugins should also be able to define new hook events:
+
+```js
+flow.hook('sla:expired', () => {
+  // do something when a records hits its SLA time
+});
+```
