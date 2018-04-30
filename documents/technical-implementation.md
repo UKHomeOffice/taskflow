@@ -122,6 +122,10 @@ It would be expected that hook functions return promises.
 
 ### Plugins
 
+Plugins should be used to extend the core functionality.
+
+#### SLA Example
+
 In this example, the "SLA" plugin might create a hook on the `create` event, which would set a "due date" property on the record:
 
 ```js
@@ -147,4 +151,19 @@ Plugins should also be able to define new hook events:
 flow.hook('sla:expired', () => {
   // do something when a records hits its SLA time
 });
+```
+
+#### Webhooks example
+
+In this simple example, we just define a url and a selection of events, and this would create hooks on those events and POST the event metadata to the url defined whenever an event was triggered.
+
+```js
+const Webhooks = require('taskflow-plugin-webhooks');
+
+const webhooks = Webhooks({
+  url: 'https://example.com',
+  events: ['state', 'task']
+});
+
+flow.plugin(webhooks);
 ```
