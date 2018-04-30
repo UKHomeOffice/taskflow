@@ -30,4 +30,4 @@ In the first instance, it is expected that a keycloak integration would be provi
 
 ## User interface
 
-It is not expected that UI is in scope for this module. An extensible default UI might be provided as a separate module.
+It is not expected that UI is in scope for this module. An extensible default UI will likely be provided as a separate module.
