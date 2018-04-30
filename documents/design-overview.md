@@ -6,6 +6,8 @@
 
 Workflows are represented at a high-level by a series of states, through which a data entity (a record) will move, from initial receipt - for example, submission of a webform - to a "completed" state.
 
+It is assumed that all workflows would have one or more "end states". Long-term administration of records in a CRM-type system is considered out of scope here.
+
 ### Tasks
 
 Tasks represent a requirement for user input in order to process the record. They are the human touchpoints in the workflow, and will generally include (non-automatable) decision making processes and interactions with other systems and services.
@@ -29,6 +31,10 @@ Any implementation should provide a simple API for extending functionality.
 ## Comments and supporting documents
 
 In addition to workflow transitions, it would be expected that users would be able to add comments and attachments to records at any stage of the process.
+
+## Change logs and audit trails
+
+It is expected that all records will have a fully inspectable changelog, and accompanying audit trail that shows all actions performed on the record.
 
 ## Authentication
 
