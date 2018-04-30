@@ -18,7 +18,7 @@ Hooks provide an API for functionality to be bound to the activity on the record
 
 Hooks would be defined as middleware-type functions, which are called with arguments representing the record, the current event metadata, and an API with which to perform actions on the record.
 
-Hooks could also act as gatekeepers on events - i.e. as validators - by enabling a mechanism by which they can return error states.
+Hooks could also act as gatekeepers on events - i.e. as validators or permission checking - by enabling a mechanism by which they can return error states.
 
 ### Plugins and extensions
 
@@ -41,6 +41,8 @@ It is expected that all records will have a fully inspectable changelog, and acc
 It is expected that authentication would not be in scope for this module, but integrations for some common authentication services should be provided so that implementations can integrate with any authentication provider.
 
 In the first instance, it is expected that a keycloak integration would be provided.
+
+The management of user roles _might_ be included here, in particular to support authentication services which do not also provide management of user roles, or for cases where the user roles might not be directly translatable.
 
 ## User interface
 
