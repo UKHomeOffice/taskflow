@@ -18,6 +18,14 @@ Hooks would be defined as middleware-type functions, which are called with argum
 
 Hooks could also act as gatekeepers on events - i.e. as validators - by enabling a mechanism by which they can return error states.
 
+### Plugins and extensions
+
+It would be expected that most workflows would be expressible as a series of tasks and hooks. However, it would be desirable to be able to express certain common patterns as reusable plugins. These would convert some basic configuration into a set of tasks and hooks.
+
+For example, you might wish to define SLAs simply as a set of start/end points, and the accompanying SLA period rather than defining hooks directly.
+
+Any implementation should provide a simple API for extending functionality.
+
 ## Comments and supporting documents
 
 In addition to workflow transitions, it would be expected that users would be able to add comments and attachments to records at any stage of the process.
