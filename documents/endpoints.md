@@ -11,6 +11,6 @@ The following endpoints would be implemented:
 * `GET  /record/:id/task/:id`
 * `PUT  /record/:id/task/:id`
 
-_Note: realistically it would be the case that the trailing `s` on `record(s)` and `task(s)` would always be optional. The base url (i.e. `/record(s)?` may also be configurable)_
+_Note: realistically it would be the case that the trailing `s` on `record(s)` and `task(s)` would always be optional. The base url (i.e. `/record(s)?`) may also be configurable._
 
 Plugins may result in additional endpoints being created.
