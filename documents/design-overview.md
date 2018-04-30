@@ -44,6 +44,8 @@ In the first instance, it is expected that a keycloak integration would be provi
 
 The management of user roles _might_ be included here, in particular to support authentication services which do not also provide management of user roles, or for cases where the user roles might not be directly translatable.
 
+Alternatively, a user-management system might be implemented as a separate deliverable, which could be used as an authentication layer here.
+
 ## User interface
 
 It is not expected that UI is in scope for this module. An extensible default UI will likely be provided as a separate module.
