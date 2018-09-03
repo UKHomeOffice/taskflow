@@ -1,0 +1,26 @@
+{
+  "name": "taskflow",
+  "version": "1.0.0",
+  "description": "Proof of concept for workflow task management",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./test --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UKHomeOffice/taskflow.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/UKHomeOffice/taskflow/issues"
+  },
+  "homepage": "https://github.com/UKHomeOffice/taskflow#readme",
+  "devDependencies": {
+    "mocha": "^5.2.0"
+  },
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
