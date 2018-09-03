@@ -3,3 +3,8 @@ extends:
 
 env:
   mocha: true
+
+rules:
+  implicit-dependencies/no-implicit:
+    - error
+    - dev: true
