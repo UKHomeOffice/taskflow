@@ -1,0 +1,16 @@
+pipeline:
+
+  test:
+    image: node:10
+    commands:
+      - npm ci
+      - npm test
+    when:
+      event: [push, pull_request, tag]
+
+  audit:
+    image: node:10
+    commands:
+      - npx @lennym/ciaudit
+    when:
+      event: [push, pull_request, tag]
