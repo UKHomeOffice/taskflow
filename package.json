@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
     "test:lint": "eslint .",
-    "test:unit": "mocha ./test --recursive"
+    "test:unit": "NODE_ENV=test mocha ./test --recursive --exit --timeout 5000",
+    "migrate": "knex migrate:latest"
   },
   "repository": {
     "type": "git",
@@ -23,10 +24,13 @@
     "eslint": "^5.5.0",
     "eslint-config-lennym": "^2.0.1",
     "mocha": "^5.2.0",
+    "sqlite3": "^4.0.2",
     "supertest": "^3.1.0"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "knex": "^0.15.2",
+    "objection": "^1.2.6"
   }
 }
