@@ -1,17 +1,22 @@
 const request = require('supertest');
 const express = require('express');
 const assert = require('assert');
+const sinon = require('sinon');
 
-const Taskflow = require('../../');
-const Case = require('../../lib/db/case');
+const Taskflow = require('../../../');
+const Case = require('../../../lib/db/case');
 
-const reset = require('./utils/reset-database');
+const reset = require('../utils/reset-database');
 
 describe('Integration', () => {
 
   beforeEach(() => {
+    this.flow = Taskflow();
     this.app = express();
-    this.app.use(Taskflow());
+    this.app.use(this.flow);
+    this.app.use((err, req, res, next) => {
+      console.error(err);
+    });
 
     return reset();
   });
@@ -59,7 +64,6 @@ describe('Integration', () => {
   describe('POST /', () => {
 
     it('responds 200', () => {
-
       return request(this.app)
         .post('/')
         .send({ test: 'data' })
@@ -67,7 +71,6 @@ describe('Integration', () => {
     });
 
     it('inserts a record into the database', () => {
-
       return Promise.resolve()
         .then(() => {
           return request(this.app)
@@ -83,6 +86,25 @@ describe('Integration', () => {
             .expect(response => {
               assert.equal(response.body.data.length, 1, '1 record is returned');
             });
+        });
+    });
+
+    it('triggers any `create` hooks', () => {
+      const stub = sinon.stub().resolves();
+      this.flow.hook('create', stub);
+
+      return Promise.resolve()
+        .then(() => {
+          return request(this.app)
+            .post('/')
+            .set('Content-type', 'application/json')
+            .send({ test: 'data' })
+            .expect(200);
+        })
+        .then(() => {
+          assert.equal(stub.calledOnce, true, 'Hook was called exactly once');
+          const params = stub.firstCall.args[0];
+          assert.equal(params.event, 'create');
         });
     });
 
