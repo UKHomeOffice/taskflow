@@ -8,15 +8,14 @@ const Case = require('../../../lib/db/case');
 
 const reset = require('../utils/reset-database');
 
-describe('Integration', () => {
+const settings = require('../../../knexfile').test;
+
+describe('Integration - /', () => {
 
   beforeEach(() => {
-    this.flow = Taskflow();
+    this.flow = Taskflow(settings.connection);
     this.app = express();
     this.app.use(this.flow);
-    this.app.use((err, req, res, next) => {
-      console.error(err);
-    });
 
     return reset();
   });
@@ -27,7 +26,7 @@ describe('Integration', () => {
       return Promise.all([
         Case.query()
           .insert({
-            id: 'a',
+            id: '0ddfea8d-31d9-4258-a545-b403a3fc4864',
             status: 'new',
             data: {
               test: 'data1'
@@ -35,7 +34,7 @@ describe('Integration', () => {
           }),
         Case.query()
           .insert({
-            id: 'b',
+            id: '56119f73-1477-4ddc-8f79-88adb3386775',
             status: 'new',
             data: {
               test: 'data2'
@@ -55,7 +54,10 @@ describe('Integration', () => {
         .get('/')
         .expect(response => {
           assert.equal(response.body.data.length, 2, '2 records are returned');
-          assert.deepEqual(response.body.data.map(o => o.id), ['a', 'b']);
+          assert.deepEqual(response.body.data.map(o => o.id), [
+            '0ddfea8d-31d9-4258-a545-b403a3fc4864',
+            '56119f73-1477-4ddc-8f79-88adb3386775'
+          ]);
         });
     });
 
@@ -103,8 +105,6 @@ describe('Integration', () => {
         })
         .then(() => {
           assert.equal(stub.calledOnce, true, 'Hook was called exactly once');
-          const params = stub.firstCall.args[0];
-          assert.equal(params.event, 'create');
         });
     });
 

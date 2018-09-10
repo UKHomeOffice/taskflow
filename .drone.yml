@@ -2,6 +2,8 @@ pipeline:
 
   test:
     image: node:10
+    environment:
+      POSTGRES_HOST: database
     commands:
       - npm ci
       - npm test
@@ -14,3 +16,10 @@ pipeline:
       - npx @lennym/ciaudit
     when:
       event: [push, pull_request, tag]
+
+
+services:
+  database:
+    image: postgres
+    environment:
+      - POSTGRES_USER=taskflow-test

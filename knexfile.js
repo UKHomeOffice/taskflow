@@ -1,18 +1,11 @@
 module.exports = {
 
   test: {
-    client: 'sqlite3',
-    useNullAsDefault: true,
+    client: 'postgres',
     connection: {
-      filename: './test.sqlite3'
-    }
-  },
-
-  development: {
-    client: 'sqlite3',
-    useNullAsDefault: true,
-    connection: {
-      filename: './dev.sqlite3'
+      host: process.env.POSTGRES_HOST || 'localhost',
+      user: process.env.POSTGRES_USER || 'taskflow-test',
+      database: process.env.POSTGRES_DB || 'taskflow-test'
     }
   }
 
