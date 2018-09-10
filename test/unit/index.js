@@ -1,5 +1,5 @@
 const assert = require('assert');
-const Taskflow = require('../');
+const Taskflow = require('../../');
 
 describe('Initialisation', () => {
 
