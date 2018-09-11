@@ -12,7 +12,7 @@ const settings = require('../../../knexfile').test;
 describe('GET /', () => {
 
   beforeEach(() => {
-    this.flow = Taskflow(settings.connection);
+    this.flow = Taskflow({ db: settings.connection });
     this.app = express();
     this.app.use(this.flow);
 

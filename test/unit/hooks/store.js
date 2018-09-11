@@ -30,6 +30,11 @@ describe('Hooks Store', () => {
       });
     });
 
+    it('can be chained', () => {
+      this.store.create('create', () => {}).create('create', () => {});
+      assert.equal(this.store.hooks('create').length, 2, '2 hooks have been added');
+    });
+
   });
 
   describe('hooks', () => {

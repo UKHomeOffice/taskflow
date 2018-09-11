@@ -9,13 +9,12 @@ const Case = require('../../../lib/db/case');
 const reset = require('../utils/reset-database');
 
 const settings = require('../../../knexfile').test;
-
 const id = '538a42c9-be67-4289-a8be-550c09a78b78';
 
 describe('/:case', () => {
 
   beforeEach(() => {
-    this.flow = Taskflow(settings.connection);
+    this.flow = Taskflow({ db: settings.connection });
     this.app = express();
     this.app.use(this.flow);
 
