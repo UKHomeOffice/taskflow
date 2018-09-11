@@ -6,9 +6,8 @@
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
     "test:lint": "eslint .",
-    "pretest:unit": "npm run migrate -- --env test",
-    "test:unit": "NODE_ENV=test mocha ./test --recursive --exit --timeout 5000",
-    "migrate": "knex migrate:latest"
+    "pretest:unit": "bin/taskflow migrate",
+    "test:unit": "NODE_ENV=test mocha ./test --recursive --exit --timeout 5000"
   },
   "repository": {
     "type": "git",
@@ -34,8 +33,10 @@
     "express": "^4.16.3",
     "knex": "^0.15.2",
     "lodash": "^4.17.10",
+    "minimist": "^1.2.0",
     "objection": "^1.2.6",
     "pg": "^7.4.3",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "witch": "^1.0.3"
   }
 }

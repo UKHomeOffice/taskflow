@@ -3,9 +3,9 @@ module.exports = {
   test: {
     client: 'postgres',
     connection: {
-      host: process.env.POSTGRES_HOST || 'localhost',
-      user: process.env.POSTGRES_USER || 'taskflow-test',
-      database: process.env.POSTGRES_DB || 'taskflow-test'
+      host: process.env.TASKFLOW_POSTGRES_HOST || 'localhost',
+      user: process.env.TASKFLOW_POSTGRES_USER || 'taskflow-test',
+      database: process.env.TASKFLOW_POSTGRES_DB || 'taskflow-test'
     }
   }
 
