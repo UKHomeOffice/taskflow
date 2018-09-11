@@ -3,7 +3,8 @@ pipeline:
   test:
     image: node:10
     environment:
-      POSTGRES_HOST: database
+      TASKFLOW_POSTGRES_HOST: database
+      TASKFLOW_POSTGRES_USER: taskflow-test
     commands:
       - npm ci
       - npm test
