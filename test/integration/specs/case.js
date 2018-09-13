@@ -57,6 +57,55 @@ describe('/:case', () => {
 
   });
 
+  describe('PUT /:case', () => {
+
+    it('responds 200 for a valid id', () => {
+      return request(this.app)
+        .put(`/${id}`)
+        .set('Content-type', 'application/json')
+        .send({ test: 'updated' })
+        .expect(200);
+    });
+
+    it('responds 404 for an unknown id', () => {
+      return request(this.app)
+        .put('/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa')
+        .set('Content-type', 'application/json')
+        .send({ test: 'updated' })
+        .expect(404);
+    });
+
+    it('returns the model', () => {
+      return request(this.app)
+        .put(`/${id}`)
+        .set('Content-type', 'application/json')
+        .send({ test: 'updated' })
+        .expect(response => {
+          assert.equal(response.body.data.id, id, '`id` property is present and correct');
+          assert.equal(response.body.data.status, 'new', '`status` property is present and correct');
+          assert.deepEqual(response.body.data.data, { test: 'updated' }, '`data` property is present and correct');
+        });
+    });
+
+    it('updated data is saved to the database', () => {
+      return request(this.app)
+        .put(`/${id}`)
+        .set('Content-type', 'application/json')
+        .send({ test: 'updated' })
+        .then(() => {
+          return request(this.app)
+            .get(`/${id}`)
+            .expect(200)
+            .expect(response => {
+              assert.equal(response.body.data.id, id, '`id` property is present and correct');
+              assert.equal(response.body.data.status, 'new', '`status` property is present and correct');
+              assert.deepEqual(response.body.data.data, { test: 'updated' }, '`data` property is present and correct');
+            });
+        });
+    });
+
+  });
+
   describe('PUT /:case/status', () => {
 
     it('responds 200 for a valid id', () => {
@@ -110,6 +159,18 @@ describe('/:case', () => {
             .expect(response => {
               assert.equal(response.body.data.status, 'updated', 'Status is updated to `updated`');
             });
+        });
+    });
+
+    it('returns the model', () => {
+      return request(this.app)
+        .put(`/${id}/status`)
+        .set('Content-type', 'application/json')
+        .send({ status: 'updated' })
+        .expect(response => {
+          assert.equal(response.body.data.id, id, '`id` property is present and correct');
+          assert.equal(response.body.data.status, 'updated', '`status` property is present and correct');
+          assert.deepEqual(response.body.data.data, { test: 'data' }, '`data` property is present and correct');
         });
     });
 
