@@ -1,0 +1,26 @@
+pipeline:
+
+  test:
+    image: node:10
+    environment:
+      TASKFLOW_POSTGRES_HOST: database
+      TASKFLOW_POSTGRES_USER: taskflow-test
+    commands:
+      - npm ci
+      - npm test
+    when:
+      event: [push, pull_request, tag]
+
+  audit:
+    image: node:10
+    commands:
+      - npx @lennym/ciaudit
+    when:
+      event: [push, pull_request, tag]
+
+
+services:
+  database:
+    image: postgres
+    environment:
+      - POSTGRES_USER=taskflow-test
