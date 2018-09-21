@@ -99,6 +99,14 @@ flow
   });
 ```
 
+### Events
+
+The following events can have hooks applied:
+
+* `create` - called when a case is created
+* `update` - called when the data from a case is modified
+* `status:<old>:<new>` - called when a case's status is modified
+
 ## Running tests
 
 The tests are built to run against a real postgres database, so to run the unit tests you will need a databse running.
