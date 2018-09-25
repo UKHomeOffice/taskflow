@@ -107,6 +107,29 @@ The following events can have hooks applied:
 * `update` - called when the data from a case is modified
 * `status:<old>:<new>` - called when a case's status is modified
 
+### Arguments
+
+Hook functions are passed a single argument which contains event details and metadata, and has attached methods for performing actions on the case object.
+
+The event object will always have the following properties:
+
+* `id` - the id of the case object
+* `event` - the event that triggered the current hook - e.g. `create`/`update`
+* `meta` - any metadata related to the event - e.g. the user that triggered the event or any arguments passed to the event
+* `status` - the current status of the case
+* `data` - the full case data
+
+Additionally, the event object has two methods:
+
+* `setStatus(status)` - updates the status property of the case
+* `update(data)` - updates the data of the case
+
+These methods are only available on post-event hooks, and attempting to call them on a pre-event hook will result in a warning.
+
+Calling these methods will trigger events and related hooks, so care should be taken not to create infinite recursive loops of updating data or statuses.
+
+If hooks cause updates to case statuses or data then any subsequent hooks will be called with the updated values.
+
 ## Running tests
 
 The tests are built to run against a real postgres database, so to run the unit tests you will need a databse running.

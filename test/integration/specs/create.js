@@ -15,7 +15,6 @@ describe('POST /', () => {
     this.flow = Taskflow({ db: settings.connection });
     this.app = express();
     this.app.use(this.flow);
-
     return reset();
   });
 

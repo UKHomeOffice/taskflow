@@ -17,7 +17,6 @@ describe('/:case', () => {
     this.flow = Taskflow({ db: settings.connection });
     this.app = express();
     this.app.use(this.flow);
-
     return reset()
       .then(() => {
         return Case.query()
