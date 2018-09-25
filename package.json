@@ -1,6 +1,6 @@
 {
-  "name": "taskflow",
-  "version": "1.0.0",
+  "name": "@ukhomeoffice/taskflow",
+  "version": "0.0.0",
   "description": "Proof of concept for workflow task management",
   "main": "index.js",
   "scripts": {
@@ -39,5 +39,8 @@
     "pg": "^7.4.3",
     "uuid": "^3.3.2",
     "witch": "^1.0.3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

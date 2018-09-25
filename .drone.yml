@@ -18,6 +18,15 @@ pipeline:
     when:
       event: [push, pull_request, tag]
 
+  publish:
+    image: plugins/npm
+    secrets:
+      - npm_token
+      - npm_email
+    token: ${NPM_TOKEN}
+    email: ${NPM_EMAIL}
+    when:
+      event: tag
 
 services:
   database:
