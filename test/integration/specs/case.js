@@ -199,6 +199,21 @@ describe('/:case', () => {
         });
     });
 
+    it('includes the new status on pre-event hook metadata', () => {
+      const stub = sinon.stub().resolves();
+      this.flow.hook('pre-status:*:updated', stub);
+      return request(this.app)
+        .put(`/${id}/status`)
+        .set('Content-type', 'application/json')
+        .send({ status: 'updated' })
+        .expect(200)
+        .then(() => {
+          assert.equal(stub.calledOnce, true, 'Hook was called exactly once');
+          const meta = stub.lastCall.args[0].meta;
+          assert.equal(meta.next, 'updated', 'Hook metadata contains the new status');
+        });
+    });
+
   });
 
 });
