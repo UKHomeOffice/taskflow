@@ -23,7 +23,7 @@ describe('Hooks', () => {
     });
     return reset()
       .then(() => {
-        return Case.query()
+        return Case.query(this.flow.db)
           .insert({
             id,
             status: 'new',

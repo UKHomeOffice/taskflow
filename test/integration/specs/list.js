@@ -19,7 +19,7 @@ describe('GET /', () => {
     return reset()
       .then(() => {
         return Promise.all([
-          Case.query()
+          Case.query(this.flow.db)
             .insert({
               id: '0ddfea8d-31d9-4258-a545-b403a3fc4864',
               status: 'new',
@@ -27,7 +27,7 @@ describe('GET /', () => {
                 test: 'data1'
               }
             }),
-          Case.query()
+          Case.query(this.flow.db)
             .insert({
               id: '56119f73-1477-4ddc-8f79-88adb3386775',
               status: 'new',
