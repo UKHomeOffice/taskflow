@@ -17,9 +17,12 @@ describe('/:case', () => {
     this.flow = Taskflow({ db: settings.connection });
     this.app = express();
     this.app.use(this.flow);
-    return reset()
+    return Promise.resolve()
       .then(() => {
-        return Case.query()
+        return reset();
+      })
+      .then(() => {
+        return Case.query(this.flow.db)
           .insert({
             id,
             status: 'new',
