@@ -8,7 +8,7 @@
     "test:lint": "eslint .",
     "pretest:unit": "bin/taskflow migrate",
     "test:unit": "NODE_ENV=test mocha ./test --recursive --exit --timeout 5000  --require dotenv/config",
-    "test:db": "docker run -p 5432:5432 -e POSTGRES_USER=postgres taskflow-test"
+    "test:db": "docker run -p 5432:5432 -e POSTGRES_DB=taskflow-test postgres"
   },
   "repository": {
     "type": "git",
