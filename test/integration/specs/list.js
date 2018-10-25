@@ -73,9 +73,35 @@ describe('GET /', () => {
       .expect(200);
   });
 
-  it('automatically filters autoresolved status', () => {
+  it('returns all the things', () => {
     return request(this.app)
       .get('/')
+      .expect(response => {
+        assert.equal(response.body.data.length, 5, '5 records were returned');
+        assert.deepEqual(response.body.data.map(o => o.id), [
+          'fb38e7be-386b-4681-9717-af9a7396b8ed',
+          '0ddfea8d-31d9-4258-a545-b403a3fc4864',
+          'e384f4fc-b647-40b6-b8f6-dddc6d9e93da',
+          'a5aa8804-4658-458d-87b4-88a585c70cea',
+          '1da5d32e-4ec8-4ebc-8f95-6b7983077e9b'
+        ]);
+      });
+  });
+
+  it('can fetch cases by status', () => {
+    return request(this.app)
+      .get('/?status=with-ntco')
+      .expect(response => {
+        assert.equal(response.body.data.length, 1, '1 record was returned');
+        assert.deepEqual(response.body.data.map(o => o.id), [
+          'e384f4fc-b647-40b6-b8f6-dddc6d9e93da'
+        ]);
+      });
+  });
+
+  it('can filter cases by status', () => {
+    return request(this.app)
+      .get('/?filter[status]=autoresolved')
       .expect(response => {
         assert.equal(response.body.data.length, 4, '4 records were returned');
         assert.deepEqual(response.body.data.map(o => o.id), [
@@ -87,31 +113,21 @@ describe('GET /', () => {
       });
   });
 
-  it('can filter the tasks by status', () => {
-    return request(this.app)
-      .get('/?status=with-ntco')
-      .expect(response => {
-        assert.equal(response.body.data.length, 1, '1 record was returned');
-        assert.deepEqual(response.body.data.map(o => o.id), [
-          'e384f4fc-b647-40b6-b8f6-dddc6d9e93da'
-        ]);
-      });
-  });
-
-  it('can filter the tasks by any data property', () => {
+  it('can filter the cases by any data property', () => {
     return request(this.app)
       .get('/?data[subject]=5b7bad13-f34b-4959-bd08-c6067ae2fcdd')
       .expect(response => {
-        assert.equal(response.body.data.length, 3, '3 records were returned');
+        assert.equal(response.body.data.length, 4, '4 records were returned');
         assert.deepEqual(response.body.data.map(o => o.id), [
           'fb38e7be-386b-4681-9717-af9a7396b8ed',
+          '0ddfea8d-31d9-4258-a545-b403a3fc4864',
           'e384f4fc-b647-40b6-b8f6-dddc6d9e93da',
           'a5aa8804-4658-458d-87b4-88a585c70cea'
         ]);
       });
   });
 
-  it('can filter the tasks by multiple data properties', () => {
+  it('can filter the cases by multiple data properties', () => {
     return request(this.app)
       .get('/?data[subject]=5b7bad13-f34b-4959-bd08-c6067ae2fcdd&data[model]=establishment')
       .expect(response => {
