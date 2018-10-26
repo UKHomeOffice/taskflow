@@ -126,6 +126,18 @@ describe('GET /', () => {
       });
   });
 
+  it('can fetch cases by multiple statuses', () => {
+    return request(this.app)
+      .get('/?status=with-ntco&status=resolved')
+      .expect(response => {
+        assert.equal(response.body.data.length, 2, '2 records were returned');
+        assert.deepEqual(response.body.data.map(o => o.id), [
+          'fb38e7be-386b-4681-9717-af9a7396b8ed',
+          'e384f4fc-b647-40b6-b8f6-dddc6d9e93da'
+        ]);
+      });
+  });
+
   it('can fetch the cases by any data property', () => {
     return request(this.app)
       .get('/?data[subject]=5b7bad13-f34b-4959-bd08-c6067ae2fcdd')
