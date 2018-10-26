@@ -73,7 +73,7 @@ describe('GET /', () => {
       .expect(200);
   });
 
-  it('returns all the things', () => {
+  it('can return all the things', () => {
     return request(this.app)
       .get('/')
       .expect(response => {
@@ -81,6 +81,33 @@ describe('GET /', () => {
         assert.deepEqual(response.body.data.map(o => o.id), [
           'fb38e7be-386b-4681-9717-af9a7396b8ed',
           '0ddfea8d-31d9-4258-a545-b403a3fc4864',
+          'e384f4fc-b647-40b6-b8f6-dddc6d9e93da',
+          'a5aa8804-4658-458d-87b4-88a585c70cea',
+          '1da5d32e-4ec8-4ebc-8f95-6b7983077e9b'
+        ]);
+      });
+  });
+
+  it('can exclude cases by status', () => {
+    return request(this.app)
+      .get('/?exclude[status]=autoresolved')
+      .expect(response => {
+        assert.equal(response.body.data.length, 4, '4 records were returned');
+        assert.deepEqual(response.body.data.map(o => o.id), [
+          'fb38e7be-386b-4681-9717-af9a7396b8ed',
+          'e384f4fc-b647-40b6-b8f6-dddc6d9e93da',
+          'a5aa8804-4658-458d-87b4-88a585c70cea',
+          '1da5d32e-4ec8-4ebc-8f95-6b7983077e9b'
+        ]);
+      });
+  });
+
+  it('can exclude cases by multiple statuses', () => {
+    return request(this.app)
+      .get('/?exclude[status]=autoresolved&exclude[status]=resolved')
+      .expect(response => {
+        assert.equal(response.body.data.length, 3, '3 records were returned');
+        assert.deepEqual(response.body.data.map(o => o.id), [
           'e384f4fc-b647-40b6-b8f6-dddc6d9e93da',
           'a5aa8804-4658-458d-87b4-88a585c70cea',
           '1da5d32e-4ec8-4ebc-8f95-6b7983077e9b'
@@ -99,21 +126,7 @@ describe('GET /', () => {
       });
   });
 
-  it('can filter cases by status', () => {
-    return request(this.app)
-      .get('/?filter[status]=autoresolved')
-      .expect(response => {
-        assert.equal(response.body.data.length, 4, '4 records were returned');
-        assert.deepEqual(response.body.data.map(o => o.id), [
-          'fb38e7be-386b-4681-9717-af9a7396b8ed',
-          'e384f4fc-b647-40b6-b8f6-dddc6d9e93da',
-          'a5aa8804-4658-458d-87b4-88a585c70cea',
-          '1da5d32e-4ec8-4ebc-8f95-6b7983077e9b'
-        ]);
-      });
-  });
-
-  it('can filter the cases by any data property', () => {
+  it('can fetch the cases by any data property', () => {
     return request(this.app)
       .get('/?data[subject]=5b7bad13-f34b-4959-bd08-c6067ae2fcdd')
       .expect(response => {
@@ -127,13 +140,25 @@ describe('GET /', () => {
       });
   });
 
-  it('can filter the cases by multiple data properties', () => {
+  it('can fetch the cases by multiple data properties', () => {
     return request(this.app)
       .get('/?data[subject]=5b7bad13-f34b-4959-bd08-c6067ae2fcdd&data[model]=establishment')
       .expect(response => {
         assert.equal(response.body.data.length, 1, '1 record was returned');
         assert.deepEqual(response.body.data.map(o => o.id), [
           'fb38e7be-386b-4681-9717-af9a7396b8ed'
+        ]);
+      });
+  });
+
+  it('can fetch the cases by a data property and exclude a status', () => {
+    return request(this.app)
+      .get('/?data[model]=pil&exclude[status]=autoresolved')
+      .expect(response => {
+        assert.equal(response.body.data.length, 2, '2 records were returned');
+        assert.deepEqual(response.body.data.map(o => o.id), [
+          'e384f4fc-b647-40b6-b8f6-dddc6d9e93da',
+          '1da5d32e-4ec8-4ebc-8f95-6b7983077e9b'
         ]);
       });
   });
