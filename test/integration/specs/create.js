@@ -25,25 +25,24 @@ describe('POST /', () => {
       .expect(200);
   });
 
-  // it('inserts a record into the database', () => {
-  //   return Promise.resolve()
-  //     .then(() => {
-  //       return request(this.app)
-  //         .post('/')
-  //         .set('Content-type', 'application/json')
-  //         .send({ test: 'data' })
-  //         .expect(200);
-  //     })
-  //     .then(() => {
-  //       return request(this.app)
-  //         .get('/')
-  //         .expect(200)
-  //         .expect(response => {
-  //           // console.log('RESPONSE ', response);
-  //           assert.equal(response.body.data.length, 1, '1 record is returned');
-  //         });
-  //     });
-  // });
+  it('inserts a record into the database', () => {
+    return Promise.resolve()
+      .then(() => {
+        return request(this.app)
+          .post('/')
+          .set('Content-type', 'application/json')
+          .send({ test: 'data' })
+          .expect(200);
+      })
+      .then(() => {
+        return request(this.app)
+          .get('/')
+          .expect(200)
+          .expect(response => {
+            assert.equal(response.body.data.length, 1, '1 record is returned');
+          });
+      });
+  });
 
   it('triggers any `pre-create` hooks', () => {
     const stub = sinon.stub().resolves();
@@ -62,26 +61,26 @@ describe('POST /', () => {
       });
   });
 
-  // it('will not insert a record if the `pre-create` hook fails', () => {
-  //   const stub = sinon.stub().rejects(new Error('Test'));
-  //   this.flow.hook('pre-create', stub);
+  it('will not insert a record if the `pre-create` hook fails', () => {
+    const stub = sinon.stub().rejects(new Error('Test'));
+    this.flow.hook('pre-create', stub);
 
-  //   return Promise.resolve()
-  //     .then(() => {
-  //       return request(this.app)
-  //         .post('/')
-  //         .set('Content-type', 'application/json')
-  //         .send({ test: 'data' })
-  //         .expect(500);
-  //     })
-  //     .then(() => {
-  //       return request(this.app)
-  //         .get('/')
-  //         .expect(response => {
-  //           assert.deepEqual(response.body.data, [], 'No records are returned from lookup');
-  //         });
-  //     });
-  // });
+    return Promise.resolve()
+      .then(() => {
+        return request(this.app)
+          .post('/')
+          .set('Content-type', 'application/json')
+          .send({ test: 'data' })
+          .expect(500);
+      })
+      .then(() => {
+        return request(this.app)
+          .get('/')
+          .expect(response => {
+            assert.deepEqual(response.body.data, [], 'No records are returned from lookup');
+          });
+      });
+  });
 
   it('will not call `create` hooks if the `pre-create` hook fails', () => {
     const pre = sinon.stub().rejects(new Error('Test'));
