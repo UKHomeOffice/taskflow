@@ -1,6 +1,11 @@
+const { knexSnakeCaseMappers } = require('objection');
+
+const snakeCaseMapper = process.env.SNAKE_MAPPER ? knexSnakeCaseMappers() : {};
+
 module.exports = {
 
   test: {
+    ...snakeCaseMapper,
     client: 'postgres',
     connection: {
       host: process.env.TASKFLOW_POSTGRES_HOST || 'localhost',
