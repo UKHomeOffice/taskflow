@@ -130,6 +130,35 @@ Calling these methods will trigger events and related hooks, so care should be t
 
 If hooks cause updates to case statuses or data then any subsequent hooks will be called with the updated values.
 
+## Decorators
+
+Decorator functions can be defined to add additional properties to cases at read time.
+
+Decorators take the case object as an argument, and should return a modifed case with any custom properties applied.
+
+To define a decorator function:
+
+```js
+const flow = taskflow();
+flow
+  .decorate(case => {
+    return { ...case, customProperty: 'my custom property' };
+  });
+```
+
+Decorator functions can be asynchronous, and should return promises (or be `async` functions).
+
+```js
+const flow = taskflow();
+flow
+  .decorate(case => {
+    return Database.query()
+      .then(result => {
+        return { ...case, customProperty: result.propertyFromDatabase };
+      });
+  });
+```
+
 ## Running tests
 
 The tests are built to run against a real postgres database, so to run the unit tests you will need a databse running.

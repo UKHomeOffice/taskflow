@@ -174,4 +174,48 @@ describe('GET /', () => {
         ]);
       });
   });
+
+  it('applies a single decorator to cases', () => {
+    this.flow.decorate(c => ({ ...c, decorated: true }));
+    return request(this.app)
+      .get('/')
+      .expect(200)
+      .expect(response => {
+        response.body.data.forEach(c => {
+          assert.equal(c.decorated, true, 'Decorator has been applied to each case');
+        });
+      });
+  });
+
+  it('applies multiple decorators to cases', () => {
+    this.flow.decorate(c => ({ ...c, decorated: true }));
+    this.flow.decorate(c => ({ ...c, decoratedAgain: true }));
+    return request(this.app)
+      .get('/')
+      .expect(200)
+      .expect(response => {
+        response.body.data.forEach(c => {
+          assert.equal(c.decorated, true, 'First decorator has been applied to each case');
+          assert.equal(c.decoratedAgain, true, 'Second decorator has been applied to each case');
+        });
+      });
+  });
+
+  it('applies multiple async decorators to cases in series', () => {
+    this.flow.decorate(c => ({ ...c, substr: c.id.substring(0, 10) }));
+    this.flow.decorate(c => ({ ...c, upper: c.substr.toUpperCase() }));
+    return request(this.app)
+      .get('/')
+      .expect(200)
+      .expect(response => {
+        assert.deepEqual(response.body.data.map(o => o.upper), [
+          'FB38E7BE-3',
+          '0DDFEA8D-3',
+          'E384F4FC-B',
+          'A5AA8804-4',
+          '1DA5D32E-4'
+        ]);
+      });
+  });
+
 });

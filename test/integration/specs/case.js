@@ -57,6 +57,35 @@ describe('/:case', () => {
         });
     });
 
+    it('applies single decorator to cases', () => {
+      this.flow.decorate(c => ({ ...c, decorated: true }));
+      return request(this.app)
+        .get(`/${id}`)
+        .expect(response => {
+          assert.equal(response.body.data.decorated, true, '`decorated` property is added to the model');
+        });
+    });
+
+    it('applies multiple decorators to cases', () => {
+      this.flow.decorate(c => ({ ...c, decorated: true }));
+      this.flow.decorate(c => ({ ...c, decoratedAgain: true }));
+      return request(this.app)
+        .get(`/${id}`)
+        .expect(response => {
+          assert.equal(response.body.data.decorated, true, '`decorated` property is added to the model');
+          assert.equal(response.body.data.decoratedAgain, true, '`decoratedAgain` property is added to the model');
+        });
+    });
+
+    it('supports asynchronous decorators', () => {
+      this.flow.decorate(c => Promise.resolve({ ...c, decorated: true }));
+      return request(this.app)
+        .get(`/${id}`)
+        .expect(response => {
+          assert.equal(response.body.data.decorated, true, '`decorated` property is added to the model');
+        });
+    });
+
   });
 
   describe('PUT /:case', () => {
