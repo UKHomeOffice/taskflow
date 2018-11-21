@@ -119,4 +119,24 @@ describe('POST /', () => {
       });
   });
 
+  it('applies decorators to the returned data', () => {
+    this.flow.decorate(c => {
+      return {
+        ...c,
+        data: { ...c.data, upper: c.data.test.toUpperCase() }
+      };
+    });
+    return Promise.resolve()
+      .then(() => {
+        return request(this.app)
+          .post('/')
+          .set('Content-type', 'application/json')
+          .send({ test: 'data' })
+          .expect(200)
+          .expect(response => {
+            assert.equal(response.body.data.data.upper, 'DATA');
+          });
+      });
+  });
+
 });
