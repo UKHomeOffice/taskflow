@@ -246,6 +246,22 @@ describe('/:case', () => {
         });
     });
 
+    it('includes the request payload in the hook metadata when changing status', () => {
+      const payload = { status: 'updated', reason: 'some reason' };
+      const stub = sinon.stub().resolves();
+      this.flow.hook('pre-status:*:*', stub);
+      return request(this.app)
+        .put(`/${id}/status`)
+        .set('Content-type', 'application/json')
+        .send(payload)
+        .expect(200)
+        .then(() => {
+          assert.equal(stub.calledOnce, true, 'Hook was called exactly once');
+          const meta = stub.lastCall.args[0].meta;
+          assert.deepEqual(meta.payload, payload, 'Hook metadata contains the request payload');
+        });
+    });
+
   });
 
 });
