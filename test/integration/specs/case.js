@@ -5,7 +5,7 @@ const assert = require('assert');
 
 const Taskflow = require('../../../');
 const Case = require('../../../lib/db/case');
-const ActivityLog = require('../../../lib/models/activity-log');
+const ActivityLog = require('../../../lib/db/activity-log');
 
 const reset = require('../utils/reset-database');
 

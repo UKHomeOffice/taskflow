@@ -1,6 +1,6 @@
 const sinon = require('sinon');
 const EventWrapper = require('../../../../lib/hooks/event-wrapper');
-const ActivityLog = require('../../../../lib/models/activity-log');
+const ActivityLog = require('../../../../lib/db/activity-log');
 const logger = require('../../../../lib/activitylog/hooks/logger');
 
 describe('Hooks Activity Logger', () => {

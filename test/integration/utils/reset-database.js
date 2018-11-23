@@ -1,6 +1,6 @@
 const settings = require('../../../knexfile').test;
 const Case = require('../../../lib/db/case');
-const ActivityLog = require('../../../lib/models/activity-log');
+const ActivityLog = require('../../../lib/db/activity-log');
 const Database = require('../../../lib/db');
 
 module.exports = () => {
