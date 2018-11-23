@@ -6,7 +6,7 @@ exports.up = function(knex, Promise) {
     .createTable('activity_log', table => {
       table.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'));
       table.uuid('case_id').references('id').inTable('cases').notNull();
-      table.uuid('changed_by').notNull();
+      table.uuid('changed_by');
       table.string('event_name').notNull();
       table.jsonb('event').notNull();
       table.string('comment');
