@@ -5,6 +5,7 @@ const assert = require('assert');
 
 const Taskflow = require('../../../');
 const Case = require('../../../lib/db/case');
+const ActivityLog = require('../../../lib/models/activity-log');
 
 const reset = require('../utils/reset-database');
 
@@ -259,6 +260,20 @@ describe('/:case', () => {
           assert.equal(stub.calledOnce, true, 'Hook was called exactly once');
           const meta = stub.lastCall.args[0].meta;
           assert.deepEqual(meta.payload, payload, 'Hook metadata contains the request payload');
+        });
+    });
+
+    it('triggers the activity log hook', () => {
+      return request(this.app)
+        .put(`/${id}/status`)
+        .set('Content-type', 'application/json')
+        .send({ status: 'updated', comment: 'testing the activity log' })
+        .expect(200)
+        .then(() => {
+          return ActivityLog.query(this.flow.db).findOne({ comment: 'testing the activity log' })
+            .then(log => {
+              assert.equal(log.eventName, 'status:new:updated', 'Activity log records each event');
+            });
         });
     });
 
