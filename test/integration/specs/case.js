@@ -248,7 +248,7 @@ describe('/:case', () => {
     });
 
     it('includes the request payload in the hook metadata when changing status', () => {
-      const payload = { status: 'updated', reason: 'some reason' };
+      const payload = { status: 'updated', meta: { comment: 'some reason' } };
       const stub = sinon.stub().resolves();
       this.flow.hook('pre-status:*:*', stub);
       return request(this.app)
@@ -259,7 +259,7 @@ describe('/:case', () => {
         .then(() => {
           assert.equal(stub.calledOnce, true, 'Hook was called exactly once');
           const meta = stub.lastCall.args[0].meta;
-          assert.deepEqual(meta.payload, payload, 'Hook metadata contains the request payload');
+          assert.deepEqual(meta.payload, payload.meta, 'Hook metadata contains the request payload metadata');
         });
     });
 
@@ -267,7 +267,7 @@ describe('/:case', () => {
       return request(this.app)
         .put(`/${id}/status`)
         .set('Content-type', 'application/json')
-        .send({ status: 'updated', comment: 'testing the activity log' })
+        .send({ status: 'updated', meta: { comment: 'testing the activity log' } })
         .expect(200)
         .then(() => {
           return ActivityLog.query(this.flow.db).findOne({ comment: 'testing the activity log' })
