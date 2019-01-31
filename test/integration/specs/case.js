@@ -87,6 +87,19 @@ describe('/:case', () => {
         });
     });
 
+    it('includes decorators configured with `list: false`', () => {
+      this.flow.decorate(c => ({ ...c, decorated: true }));
+      this.flow.decorate(c => ({ ...c, decoratedAgain: true }));
+      this.flow.decorate(c => ({ ...c, decoratedList: true }), { list: false });
+      return request(this.app)
+        .get(`/${id}`)
+        .expect(response => {
+          assert.equal(response.body.data.decorated, true, '`decorated` property is added to the model');
+          assert.equal(response.body.data.decoratedAgain, true, '`decoratedAgain` property is added to the model');
+          assert.equal(response.body.data.decoratedList, true, '`decoratedList` property is added to the model');
+        });
+    });
+
   });
 
   describe('PUT /:case', () => {
