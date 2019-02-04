@@ -218,4 +218,20 @@ describe('GET /', () => {
       });
   });
 
+  it('ignores decorators defined with `list: false`', () => {
+    this.flow.decorate(c => ({ ...c, decorated: true }));
+    this.flow.decorate(c => ({ ...c, decoratedAgain: true }));
+    this.flow.decorate(c => ({ ...c, decoratedList: true }), { list: false });
+    return request(this.app)
+      .get('/')
+      .expect(200)
+      .expect(response => {
+        response.body.data.forEach(c => {
+          assert.equal(c.decorated, true, 'First decorator has been applied to each case');
+          assert.equal(c.decoratedAgain, true, 'Second decorator has been applied to each case');
+          assert.equal(c.decoratedList, undefined, 'List decorator has not been applied');
+        });
+      });
+  });
+
 });
