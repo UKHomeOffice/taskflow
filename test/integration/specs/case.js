@@ -272,7 +272,7 @@ describe('/:case', () => {
         .then(() => {
           assert.equal(stub.calledOnce, true, 'Hook was called exactly once');
           const meta = stub.lastCall.args[0].meta;
-          assert.deepEqual(meta.payload, payload.meta, 'Hook metadata contains the request payload metadata');
+          assert.deepEqual(meta.payload.meta, payload.meta, 'Hook metadata contains the request payload metadata');
         });
     });
 
