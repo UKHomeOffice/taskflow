@@ -290,6 +290,20 @@ describe('/:case', () => {
         });
     });
 
+    it('triggers comment hook', () => {
+      const payload = { comment: 'commenting', meta: { comment: 'commenting' } };
+      const stub = sinon.stub().resolves();
+      this.flow.hook('comment', stub);
+      return request(this.app)
+        .post(`/${id}/comment`)
+        .set('Content-type', 'application/json')
+        .send(payload)
+        .expect(200)
+        .then(() => {
+          assert.equal(stub.calledOnce, true, 'Hook was called exactly once');
+          const meta = stub.lastCall.args[0].meta;
+          assert.deepEqual(meta.payload.meta, payload.meta, 'Hook metadata contains the request payload metadata');
+        });
+    });
   });
-
 });
