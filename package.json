@@ -23,7 +23,7 @@
   "homepage": "https://github.com/UKHomeOffice/taskflow#readme",
   "devDependencies": {
     "dotenv": "^6.0.0",
-    "eslint": "^5.5.0",
+    "eslint": "^5.16.0",
     "eslint-config-lennym": "^2.0.1",
     "mocha": "^5.2.0",
     "sinon": "^6.1.5",
@@ -34,7 +34,7 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "knex": "^0.15.2",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "minimist": "^1.2.0",
     "objection": "^1.2.6",
     "pg": "^7.4.3",
