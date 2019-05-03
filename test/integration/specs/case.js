@@ -108,7 +108,7 @@ describe('/:case', () => {
       return request(this.app)
         .put(`/${id}`)
         .set('Content-type', 'application/json')
-        .send({ test: 'updated' })
+        .send({ data: { test: 'updated' } })
         .expect(200);
     });
 
@@ -124,7 +124,7 @@ describe('/:case', () => {
       return request(this.app)
         .put(`/${id}`)
         .set('Content-type', 'application/json')
-        .send({ test: 'updated' })
+        .send({ data: { test: 'updated' } })
         .expect(response => {
           assert.equal(response.body.data.id, id, '`id` property is present and correct');
           assert.equal(response.body.data.status, 'new', '`status` property is present and correct');
@@ -136,7 +136,7 @@ describe('/:case', () => {
       return request(this.app)
         .put(`/${id}`)
         .set('Content-type', 'application/json')
-        .send({ test: 'updated' })
+        .send({ data: { test: 'updated' } })
         .then(() => {
           return request(this.app)
             .get(`/${id}`)
