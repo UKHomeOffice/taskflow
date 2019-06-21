@@ -34,6 +34,10 @@ describe('Hooks', () => {
       });
   });
 
+  afterEach(done => {
+    this.flow.db.destroy(done);
+  });
+
   describe('EventWrapper', () => {
 
     describe('create hooks', () => {
@@ -101,6 +105,57 @@ describe('Hooks', () => {
               .expect(200)
               .expect(response => {
                 assert.equal(response.body.data.status, 'triaged', 'Status has been updated');
+              });
+          });
+      });
+
+      it('exposes an `update` method that can update case data on create hook', () => {
+        this.flow.hook('create', c => c.update({ test: 'something else' }));
+        return request(this.app)
+          .post('/')
+          .send({ test: 'data' })
+          .expect(200)
+          .expect(response => {
+            assert.deepEqual(response.body.data.data, { test: 'something else' });
+            return request(this.app)
+              .get(`/${response.body.data.id}`)
+              .expect(200)
+              .expect(response => {
+                assert.deepEqual(response.body.data.data, { test: 'something else' });
+              });
+          });
+      });
+
+      it('`update` will remove reset data to new state', () => {
+        this.flow.hook('create', c => c.update({ replaced: 'state' }));
+        return request(this.app)
+          .post('/')
+          .send({ test: 'data' })
+          .expect(200)
+          .expect(response => {
+            assert.deepEqual(response.body.data.data, { replaced: 'state' });
+            return request(this.app)
+              .get(`/${response.body.data.id}`)
+              .expect(200)
+              .expect(response => {
+                assert.deepEqual(response.body.data.data, { replaced: 'state' });
+              });
+          });
+      });
+
+      it('exposes a `patch` method that can update case data  without removing existing properties ', () => {
+        this.flow.hook('create', c => c.patch({ patched: 'state' }));
+        return request(this.app)
+          .post('/')
+          .send({ test: 'data' })
+          .expect(200)
+          .expect(response => {
+            assert.deepEqual(response.body.data.data, { test: 'data', patched: 'state' });
+            return request(this.app)
+              .get(`/${response.body.data.id}`)
+              .expect(200)
+              .expect(response => {
+                assert.deepEqual(response.body.data.data, { test: 'data', patched: 'state' });
               });
           });
       });

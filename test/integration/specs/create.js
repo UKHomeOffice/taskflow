@@ -18,6 +18,10 @@ describe('POST /', () => {
     return reset();
   });
 
+  afterEach(done => {
+    this.flow.db.destroy(done);
+  });
+
   it('responds 200', () => {
     return request(this.app)
       .post('/')
