@@ -34,6 +34,10 @@ describe('/:case', () => {
       });
   });
 
+  afterEach(done => {
+    this.flow.db.destroy(done);
+  });
+
   describe('GET /:case', () => {
 
     it('responds 200 for a valid id', () => {
