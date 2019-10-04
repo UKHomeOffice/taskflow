@@ -309,5 +309,31 @@ describe('/:case', () => {
           assert.deepEqual(meta.payload.meta, payload.meta, 'Hook metadata contains the request payload metadata');
         });
     });
+
+    it('triggers no hooks if status is not changed', () => {
+      const stub = sinon.stub().resolves();
+      this.flow.hook('status:*:*', stub);
+      return request(this.app)
+        .put(`/${id}/status`)
+        .set('Content-type', 'application/json')
+        .send({ status: 'new' })
+        .expect(200)
+        .then(() => {
+          assert.equal(stub.called, false, 'Hook was not called');
+        });
+    });
+
+    it('returns the model data if status is not changed', () => {
+      return request(this.app)
+        .put(`/${id}/status`)
+        .set('Content-type', 'application/json')
+        .send({ status: 'new' })
+        .expect(200)
+        .then(response => {
+          assert.equal(response.body.data.id, id, '`id` property is present and correct');
+          assert.equal(response.body.data.status, 'new', '`status` property is present and correct');
+          assert.deepEqual(response.body.data.data, { test: 'data' }, '`data` property is present and correct');
+        });
+    });
   });
 });
