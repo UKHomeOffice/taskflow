@@ -97,12 +97,17 @@ describe('GET /', () => {
       .get('/?exclude[status]=autoresolved')
       .expect(response => {
         assert.equal(response.body.data.length, 4, '4 records were returned');
-        assert.deepEqual(response.body.data.map(o => o.id), [
+
+        const actualIds = response.body.data.map(o => o.id).sort();
+
+        const expectedIds = [
           'fb38e7be-386b-4681-9717-af9a7396b8ed',
           'e384f4fc-b647-40b6-b8f6-dddc6d9e93da',
           'a5aa8804-4658-458d-87b4-88a585c70cea',
           '1da5d32e-4ec8-4ebc-8f95-6b7983077e9b'
-        ]);
+        ].sort();
+
+        assert.deepEqual(actualIds, expectedIds);
       });
   });
 
