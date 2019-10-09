@@ -31,6 +31,27 @@ describe('/:case', () => {
               test: 'data'
             }
           });
+      })
+      .then(() => {
+        return ActivityLog.query(this.flow.db)
+          .insertAndFetch({
+            caseId: id,
+            eventName: 'comment',
+            event: {
+              meta: {
+                comment: 'an original comment',
+                payload: {
+                  meta: {
+                    field: 'title'
+                  }
+                }
+              }
+            },
+            comment: 'an original comment'
+          })
+          .then(comment => {
+            this.originalComment = comment;
+          });
       });
   });
 
@@ -294,20 +315,66 @@ describe('/:case', () => {
         });
     });
 
+  });
+
+  describe('POST /:case/comment', () => {
+
     it('triggers comment hook', () => {
-      const payload = { comment: 'commenting', meta: { comment: 'commenting' } };
-      const stub = sinon.stub().resolves();
-      this.flow.hook('comment', stub);
+      const comment = 'testing add another comment';
+      const payload = { comment, meta: { comment, field: 'title' } };
+
       return request(this.app)
         .post(`/${id}/comment`)
         .set('Content-type', 'application/json')
         .send(payload)
         .expect(200)
         .then(() => {
-          assert.equal(stub.calledOnce, true, 'Hook was called exactly once');
-          const meta = stub.lastCall.args[0].meta;
-          assert.deepEqual(meta.payload.meta, payload.meta, 'Hook metadata contains the request payload metadata');
+          return ActivityLog.query(this.flow.db).findOne({ eventName: 'comment', comment })
+            .then(log => {
+              assert.equal(log.event.meta.comment, comment, 'Comment is stored in the event metadata');
+              assert.deepEqual(log.event.meta.payload, payload, 'Payload is stored in the log event');
+            });
         });
     });
+
+  });
+
+  describe('PUT /:case/comment/:id', () => {
+
+    it('triggers the update-comment hook', () => {
+      const comment = 'testing update comment';
+      const payload = { comment, meta: { comment } };
+
+      return request(this.app)
+        .put(`/${id}/comment/${this.originalComment.id}`)
+        .set('Content-type', 'application/json')
+        .send(payload)
+        .expect(200)
+        .then(() => {
+          return ActivityLog.query(this.flow.db).findOne({ eventName: 'update-comment' })
+            .then(log => {
+              assert.equal(log.event.meta.comment, comment, 'Update comment event was created with the new comment text');
+              assert.equal(log.event.meta.id, this.originalComment.id, 'Has a reference to the comment being updated');
+            });
+        });
+    });
+
+  });
+
+  describe('DELETE /:case/comment/:id', () => {
+
+    it('triggers the delete-comment hook', () => {
+      return request(this.app)
+        .delete(`/${id}/comment/${this.originalComment.id}`)
+        .set('Content-type', 'application/json')
+        .expect(200)
+        .then(() => {
+          return ActivityLog.query(this.flow.db).findOne({ eventName: 'delete-comment' })
+            .then(log => {
+              assert.equal(log.event.meta.id, this.originalComment.id, 'Has a reference to the comment being deleted');
+            });
+        });
+    });
+
   });
 });
