@@ -11,6 +11,7 @@ const reset = require('../utils/reset-database');
 
 const settings = require('../../../knexfile').test;
 const id = '538a42c9-be67-4289-a8be-550c09a78b78';
+const authorId = '28cc77ea-ca08-4dd7-b0ad-087856f34272';
 
 describe('/:case', () => {
 
@@ -37,6 +38,7 @@ describe('/:case', () => {
           .insertAndFetch({
             caseId: id,
             eventName: 'comment',
+            changedBy: authorId,
             event: {
               meta: {
                 comment: 'an original comment',
