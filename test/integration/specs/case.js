@@ -356,6 +356,18 @@ describe('/:case', () => {
 
   describe('PUT /:case/comment/:id', () => {
 
+    it('throws an error if the user is not the author', () => {
+      const comment = 'testing update comment';
+      const payload = { comment, meta: { comment } };
+
+      return request(this.app)
+        .put(`/${id}/comment/${this.originalComment.id}`)
+        .set('Content-type', 'application/json')
+        .set('X-Profile-Id', 'not-the-author-id')
+        .send(payload)
+        .expect(403);
+    });
+
     it('triggers the update-comment hook', () => {
       const comment = 'testing update comment';
       const payload = { comment, meta: { comment } };
@@ -378,6 +390,14 @@ describe('/:case', () => {
   });
 
   describe('DELETE /:case/comment/:id', () => {
+
+    it('throws an error if the user is not the author', () => {
+      return request(this.app)
+        .delete(`/${id}/comment/${this.originalComment.id}`)
+        .set('Content-type', 'application/json')
+        .set('X-Profile-Id', 'not-the-author-id')
+        .expect(403);
+    });
 
     it('triggers the delete-comment hook', () => {
       return request(this.app)
