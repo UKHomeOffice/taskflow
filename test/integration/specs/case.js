@@ -11,13 +11,27 @@ const reset = require('../utils/reset-database');
 
 const settings = require('../../../knexfile').test;
 const id = '538a42c9-be67-4289-a8be-550c09a78b78';
+const authorId = '28cc77ea-ca08-4dd7-b0ad-087856f34272';
 
 describe('/:case', () => {
 
   beforeEach(() => {
     this.flow = Taskflow({ db: settings.connection });
     this.app = express();
+
+    this.app.use((req, res, next) => {
+      if (req.header('X-Profile-Id')) {
+        req.user = {
+          profile: {
+            id: req.header('X-Profile-Id')
+          }
+        };
+      }
+      next();
+    });
+
     this.app.use(this.flow);
+
     return Promise.resolve()
       .then(() => {
         return reset();
@@ -37,6 +51,7 @@ describe('/:case', () => {
           .insertAndFetch({
             caseId: id,
             eventName: 'comment',
+            changedBy: authorId,
             event: {
               meta: {
                 comment: 'an original comment',
@@ -341,6 +356,18 @@ describe('/:case', () => {
 
   describe('PUT /:case/comment/:id', () => {
 
+    it('throws an error if the user is not the author', () => {
+      const comment = 'testing update comment';
+      const payload = { comment, meta: { comment } };
+
+      return request(this.app)
+        .put(`/${id}/comment/${this.originalComment.id}`)
+        .set('Content-type', 'application/json')
+        .set('X-Profile-Id', 'not-the-author-id')
+        .send(payload)
+        .expect(403);
+    });
+
     it('triggers the update-comment hook', () => {
       const comment = 'testing update comment';
       const payload = { comment, meta: { comment } };
@@ -348,6 +375,7 @@ describe('/:case', () => {
       return request(this.app)
         .put(`/${id}/comment/${this.originalComment.id}`)
         .set('Content-type', 'application/json')
+        .set('X-Profile-Id', authorId)
         .send(payload)
         .expect(200)
         .then(() => {
@@ -363,10 +391,19 @@ describe('/:case', () => {
 
   describe('DELETE /:case/comment/:id', () => {
 
+    it('throws an error if the user is not the author', () => {
+      return request(this.app)
+        .delete(`/${id}/comment/${this.originalComment.id}`)
+        .set('Content-type', 'application/json')
+        .set('X-Profile-Id', 'not-the-author-id')
+        .expect(403);
+    });
+
     it('triggers the delete-comment hook', () => {
       return request(this.app)
         .delete(`/${id}/comment/${this.originalComment.id}`)
         .set('Content-type', 'application/json')
+        .set('X-Profile-Id', authorId)
         .expect(200)
         .then(() => {
           return ActivityLog.query(this.flow.db).findOne({ eventName: 'delete-comment' })
