@@ -18,7 +18,20 @@ describe('/:case', () => {
   beforeEach(() => {
     this.flow = Taskflow({ db: settings.connection });
     this.app = express();
+
+    this.app.use((req, res, next) => {
+      if (req.header('X-Profile-Id')) {
+        req.user = {
+          profile: {
+            id: req.header('X-Profile-Id')
+          }
+        };
+      }
+      next();
+    });
+
     this.app.use(this.flow);
+
     return Promise.resolve()
       .then(() => {
         return reset();
@@ -350,6 +363,7 @@ describe('/:case', () => {
       return request(this.app)
         .put(`/${id}/comment/${this.originalComment.id}`)
         .set('Content-type', 'application/json')
+        .set('X-Profile-Id', authorId)
         .send(payload)
         .expect(200)
         .then(() => {
@@ -369,6 +383,7 @@ describe('/:case', () => {
       return request(this.app)
         .delete(`/${id}/comment/${this.originalComment.id}`)
         .set('Content-type', 'application/json')
+        .set('X-Profile-Id', authorId)
         .expect(200)
         .then(() => {
           return ActivityLog.query(this.flow.db).findOne({ eventName: 'delete-comment' })
