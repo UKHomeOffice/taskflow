@@ -5,6 +5,7 @@ pipeline:
     environment:
       TASKFLOW_POSTGRES_HOST: database
       TASKFLOW_POSTGRES_USER: taskflow-test
+      TASKFLOW_POSTGRES_PASSWORD: test-password
     commands:
       - npm ci
       - npm test
@@ -32,4 +33,5 @@ services:
   database:
     image: postgres
     environment:
+      - POSTGRES_PASSWORD=test-password
       - POSTGRES_USER=taskflow-test
