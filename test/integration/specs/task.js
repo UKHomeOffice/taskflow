@@ -4,7 +4,7 @@ const sinon = require('sinon');
 const assert = require('assert');
 
 const Taskflow = require('../../../');
-const Case = require('../../../lib/db/case');
+const Task = require('../../../lib/db/task');
 const ActivityLog = require('../../../lib/db/activity-log');
 
 const reset = require('../utils/reset-database');
@@ -13,7 +13,7 @@ const settings = require('../../../knexfile').test;
 const id = '538a42c9-be67-4289-a8be-550c09a78b78';
 const authorId = '28cc77ea-ca08-4dd7-b0ad-087856f34272';
 
-describe('/:case', () => {
+describe('/:task', () => {
 
   beforeEach(() => {
     this.flow = Taskflow({ db: settings.connection });
@@ -37,7 +37,7 @@ describe('/:case', () => {
         return reset();
       })
       .then(() => {
-        return Case.query(this.flow.db)
+        return Task.query(this.flow.db)
           .insert({
             id,
             status: 'new',
@@ -74,7 +74,7 @@ describe('/:case', () => {
     this.flow.db.destroy(done);
   });
 
-  describe('GET /:case', () => {
+  describe('GET /:task', () => {
 
     it('responds 200 for a valid id', () => {
       return request(this.app)
@@ -98,8 +98,8 @@ describe('/:case', () => {
         });
     });
 
-    it('applies single decorator to cases', () => {
-      this.flow.decorate(c => ({ ...c, decorated: true }));
+    it('applies single decorator to tasks', () => {
+      this.flow.decorate(task => ({ ...task, decorated: true }));
       return request(this.app)
         .get(`/${id}`)
         .expect(response => {
@@ -107,9 +107,9 @@ describe('/:case', () => {
         });
     });
 
-    it('applies multiple decorators to cases', () => {
-      this.flow.decorate(c => ({ ...c, decorated: true }));
-      this.flow.decorate(c => ({ ...c, decoratedAgain: true }));
+    it('applies multiple decorators to tasks', () => {
+      this.flow.decorate(task => ({ ...task, decorated: true }));
+      this.flow.decorate(task => ({ ...task, decoratedAgain: true }));
       return request(this.app)
         .get(`/${id}`)
         .expect(response => {
@@ -119,7 +119,7 @@ describe('/:case', () => {
     });
 
     it('supports asynchronous decorators', () => {
-      this.flow.decorate(c => Promise.resolve({ ...c, decorated: true }));
+      this.flow.decorate(task => Promise.resolve({ ...task, decorated: true }));
       return request(this.app)
         .get(`/${id}`)
         .expect(response => {
@@ -128,9 +128,9 @@ describe('/:case', () => {
     });
 
     it('includes decorators configured with `list: false`', () => {
-      this.flow.decorate(c => ({ ...c, decorated: true }));
-      this.flow.decorate(c => ({ ...c, decoratedAgain: true }));
-      this.flow.decorate(c => ({ ...c, decoratedList: true }), { list: false });
+      this.flow.decorate(task => ({ ...task, decorated: true }));
+      this.flow.decorate(task => ({ ...task, decoratedAgain: true }));
+      this.flow.decorate(task => ({ ...task, decoratedList: true }), { list: false });
       return request(this.app)
         .get(`/${id}`)
         .expect(response => {
@@ -142,7 +142,7 @@ describe('/:case', () => {
 
   });
 
-  describe('PUT /:case', () => {
+  describe('PUT /:task', () => {
 
     it('responds 200 for a valid id', () => {
       return request(this.app)
@@ -191,7 +191,7 @@ describe('/:case', () => {
 
   });
 
-  describe('PUT /:case/status', () => {
+  describe('PUT /:task/status', () => {
 
     it('responds 200 for a valid id', () => {
       return request(this.app)
@@ -332,7 +332,7 @@ describe('/:case', () => {
 
   });
 
-  describe('POST /:case/comment', () => {
+  describe('POST /:task/comment', () => {
 
     it('triggers comment hook', () => {
       const comment = 'testing add another comment';
@@ -354,7 +354,7 @@ describe('/:case', () => {
 
   });
 
-  describe('PUT /:case/comment/:id', () => {
+  describe('PUT /:task/comment/:id', () => {
 
     it('throws an error if the user is not the author', () => {
       const comment = 'testing update comment';
@@ -389,7 +389,7 @@ describe('/:case', () => {
 
   });
 
-  describe('DELETE /:case/comment/:id', () => {
+  describe('DELETE /:task/comment/:id', () => {
 
     it('throws an error if the user is not the author', () => {
       return request(this.app)

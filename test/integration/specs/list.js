@@ -3,7 +3,7 @@ const express = require('express');
 const assert = require('assert');
 
 const Taskflow = require('../../../');
-const Case = require('../../../lib/db/case');
+const Task = require('../../../lib/db/task');
 
 const reset = require('../utils/reset-database');
 
@@ -19,7 +19,7 @@ describe('GET /', () => {
     return reset()
       .then(() => {
         return Promise.all([
-          Case.query(this.flow.db)
+          Task.query(this.flow.db)
             .insert([
               {
                 id: 'fb38e7be-386b-4681-9717-af9a7396b8ed',
@@ -92,7 +92,7 @@ describe('GET /', () => {
       });
   });
 
-  it('can exclude cases by status', () => {
+  it('can exclude tasks by status', () => {
     return request(this.app)
       .get('/?exclude[status]=autoresolved')
       .expect(response => {
@@ -111,7 +111,7 @@ describe('GET /', () => {
       });
   });
 
-  it('can exclude cases by multiple statuses', () => {
+  it('can exclude tasks by multiple statuses', () => {
     return request(this.app)
       .get('/?exclude[status]=autoresolved&exclude[status]=resolved')
       .expect(response => {
@@ -124,7 +124,7 @@ describe('GET /', () => {
       });
   });
 
-  it('can fetch cases by status', () => {
+  it('can fetch tasks by status', () => {
     return request(this.app)
       .get('/?status=with-ntco')
       .expect(response => {
@@ -135,7 +135,7 @@ describe('GET /', () => {
       });
   });
 
-  it('can fetch cases by multiple statuses', () => {
+  it('can fetch tasks by multiple statuses', () => {
     return request(this.app)
       .get('/?status=with-ntco&status=resolved')
       .expect(response => {
@@ -147,7 +147,7 @@ describe('GET /', () => {
       });
   });
 
-  it('can fetch the cases by any data property', () => {
+  it('can fetch the tasks by any data property', () => {
     return request(this.app)
       .get('/?data[subject]=5b7bad13-f34b-4959-bd08-c6067ae2fcdd')
       .expect(response => {
@@ -161,7 +161,7 @@ describe('GET /', () => {
       });
   });
 
-  it('can fetch the cases by multiple data properties', () => {
+  it('can fetch the tasks by multiple data properties', () => {
     return request(this.app)
       .get('/?data[subject]=5b7bad13-f34b-4959-bd08-c6067ae2fcdd&data[model]=establishment')
       .expect(response => {
@@ -172,7 +172,7 @@ describe('GET /', () => {
       });
   });
 
-  it('can fetch the cases by a data property and exclude a status', () => {
+  it('can fetch the tasks by a data property and exclude a status', () => {
     return request(this.app)
       .get('/?data[model]=pil&exclude[status]=autoresolved')
       .expect(response => {
@@ -184,8 +184,8 @@ describe('GET /', () => {
       });
   });
 
-  it('applies a single decorator to cases', () => {
-    this.flow.decorate(c => ({ ...c, decorated: true }));
+  it('applies a single decorator to tasks', () => {
+    this.flow.decorate(task => ({ ...task, decorated: true }));
     return request(this.app)
       .get('/')
       .expect(200)
@@ -196,9 +196,9 @@ describe('GET /', () => {
       });
   });
 
-  it('applies multiple decorators to cases', () => {
-    this.flow.decorate(c => ({ ...c, decorated: true }));
-    this.flow.decorate(c => ({ ...c, decoratedAgain: true }));
+  it('applies multiple decorators to tasks', () => {
+    this.flow.decorate(task => ({ ...task, decorated: true }));
+    this.flow.decorate(task => ({ ...task, decoratedAgain: true }));
     return request(this.app)
       .get('/')
       .expect(200)
@@ -210,9 +210,9 @@ describe('GET /', () => {
       });
   });
 
-  it('applies multiple async decorators to cases in series', () => {
-    this.flow.decorate(c => ({ ...c, substr: c.id.substring(0, 10) }));
-    this.flow.decorate(c => ({ ...c, upper: c.substr.toUpperCase() }));
+  it('applies multiple async decorators to tasks in series', () => {
+    this.flow.decorate(task => ({ ...task, substr: task.id.substring(0, 10) }));
+    this.flow.decorate(task => ({ ...task, upper: task.substr.toUpperCase() }));
     return request(this.app)
       .get('/')
       .expect(200)
@@ -228,9 +228,9 @@ describe('GET /', () => {
   });
 
   it('ignores decorators defined with `list: false`', () => {
-    this.flow.decorate(c => ({ ...c, decorated: true }));
-    this.flow.decorate(c => ({ ...c, decoratedAgain: true }));
-    this.flow.decorate(c => ({ ...c, decoratedList: true }), { list: false });
+    this.flow.decorate(task => ({ ...task, decorated: true }));
+    this.flow.decorate(task => ({ ...task, decoratedAgain: true }));
+    this.flow.decorate(task => ({ ...task, decoratedList: true }), { list: false });
     return request(this.app)
       .get('/')
       .expect(200)
