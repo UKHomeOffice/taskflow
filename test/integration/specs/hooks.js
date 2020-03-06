@@ -160,6 +160,33 @@ describe('Hooks', () => {
           });
       });
 
+      it('exposes a `redirect` method on pre-create that will prevent further execution of hooks and respond with value provided', () => {
+        const stub = sinon.stub();
+        this.flow.hook('pre-create', c => c.redirect({ id }));
+        this.flow.hook('create', stub);
+        return request(this.app)
+          .post('/')
+          .send({ test: 'redirect' })
+          .expect(200)
+          .expect(response => {
+            assert.deepEqual(response.body.data.id, id);
+            assert.deepEqual(response.body.data.data, { test: 'data' });
+            assert.equal(stub.called, false);
+            return Task.query(this.flow.db)
+              .then(results => {
+                assert.equal(results.length, 1, 'No new record should have been created');
+              });
+          });
+      });
+
+      it('throws if a `redirect` is called in a non-pre-create hook', () => {
+        this.flow.hook('create', c => c.redirect({ id }));
+        return request(this.app)
+          .post('/')
+          .send({ test: 'redirect' })
+          .expect(500);
+      });
+
     });
 
   });
