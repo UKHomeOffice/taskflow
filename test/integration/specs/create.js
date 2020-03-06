@@ -86,6 +86,27 @@ describe('POST /', () => {
       });
   });
 
+  it('will not insert a record if the `create` hook fails', () => {
+    const stub = sinon.stub().rejects(new Error('Test'));
+    this.flow.hook('create', stub);
+
+    return Promise.resolve()
+      .then(() => {
+        return request(this.app)
+          .post('/')
+          .set('Content-type', 'application/json')
+          .send({ test: 'data' })
+          .expect(500);
+      })
+      .then(() => {
+        return request(this.app)
+          .get('/')
+          .expect(response => {
+            assert.deepEqual(response.body.data, [], 'No records are returned from lookup');
+          });
+      });
+  });
+
   it('will not call `create` hooks if the `pre-create` hook fails', () => {
     const pre = sinon.stub().rejects(new Error('Test'));
     const post = sinon.stub().resolves();
