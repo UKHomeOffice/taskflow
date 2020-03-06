@@ -4,7 +4,7 @@ const sinon = require('sinon');
 const assert = require('assert');
 
 const Taskflow = require('../../../');
-const Case = require('../../../lib/db/case');
+const Task = require('../../../lib/db/task');
 
 const reset = require('../utils/reset-database');
 
@@ -23,7 +23,7 @@ describe('Hooks', () => {
     });
     return reset()
       .then(() => {
-        return Case.query(this.flow.db)
+        return Task.query(this.flow.db)
           .insert({
             id,
             status: 'new',
