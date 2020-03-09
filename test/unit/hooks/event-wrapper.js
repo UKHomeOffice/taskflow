@@ -31,6 +31,11 @@ describe('Hooks EventWrapper', () => {
       assert.equal(typeof event.setStatus, 'function');
     });
 
+    it('exposes a `redirect` function on pre-create hooks', () => {
+      const event = new EventWrapper({ ...model, event: 'pre-create' });
+      assert.equal(typeof event.redirect, 'function');
+    });
+
   });
 
 });
