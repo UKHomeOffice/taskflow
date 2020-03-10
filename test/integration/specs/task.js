@@ -330,6 +330,47 @@ describe('/:task', () => {
         });
     });
 
+    it('rolls back status change if hook fails', () => {
+      const payload = { status: 'updated', meta: { comment: 'some reason' } };
+      const stub = sinon.stub().rejects(new Error('test'));
+      this.flow.hook('status:*:*', stub);
+      return request(this.app)
+        .put(`/${id}/status`)
+        .set('Content-type', 'application/json')
+        .send(payload)
+        .expect(500)
+        .then(() => {
+          return request(this.app)
+            .get(`/${id}`)
+            .expect(200)
+            .expect(response => {
+              assert.equal(response.body.data.status, 'new', 'The status should still be "new"');
+              assert.equal(response.body.data.activityLog.length, 1, 'No new activity should have been added');
+            });
+        });
+    });
+
+    it('rolls back status change if a secondary hook fails', () => {
+      const payload = { status: 'first', meta: { comment: 'some reason' } };
+      const stub = sinon.stub().rejects(new Error('test'));
+      this.flow.hook('status:*:first', m => m.setStatus('second'));
+      this.flow.hook('status:*:second', stub);
+      return request(this.app)
+        .put(`/${id}/status`)
+        .set('Content-type', 'application/json')
+        .send(payload)
+        .expect(500)
+        .then(() => {
+          return request(this.app)
+            .get(`/${id}`)
+            .expect(200)
+            .expect(response => {
+              assert.equal(response.body.data.status, 'new', 'The status should still be "new"');
+              assert.equal(response.body.data.activityLog.length, 1, 'No new activity should have been added');
+            });
+        });
+    });
+
   });
 
   describe('POST /:task/comment', () => {
@@ -348,6 +389,24 @@ describe('/:task', () => {
             .then(log => {
               assert.equal(log.event.meta.comment, comment, 'Comment is stored in the event metadata');
               assert.deepEqual(log.event.meta.payload, payload, 'Payload is stored in the log event');
+            });
+        });
+    });
+
+    it('does not add comment if comment hook fails', () => {
+      const comment = 'testing add another comment';
+      const payload = { comment, meta: { comment, field: 'title' } };
+      const stub = sinon.stub().rejects(new Error('test'));
+      this.flow.hook('comment', stub);
+      return request(this.app)
+        .post(`/${id}/comment`)
+        .set('Content-type', 'application/json')
+        .send(payload)
+        .expect(500)
+        .then(() => {
+          return ActivityLog.query(this.flow.db).findOne({ eventName: 'comment', comment })
+            .then(log => {
+              assert.ok(!log, 'No comment should have been added');
             });
         });
     });
