@@ -345,7 +345,7 @@ describe('/:task', () => {
             .expect(200)
             .expect(response => {
               assert.equal(response.body.data.status, 'new', 'The status should still be "new"');
-              assert.equal(response.body.data.activityLog.length, 1, 'No new acticity should have been added');
+              assert.equal(response.body.data.activityLog.length, 1, 'No new activity should have been added');
             });
         });
     });
@@ -366,7 +366,7 @@ describe('/:task', () => {
             .expect(200)
             .expect(response => {
               assert.equal(response.body.data.status, 'new', 'The status should still be "new"');
-              assert.equal(response.body.data.activityLog.length, 1, 'No new acticity should have been added');
+              assert.equal(response.body.data.activityLog.length, 1, 'No new activity should have been added');
             });
         });
     });
