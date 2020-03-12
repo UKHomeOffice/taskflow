@@ -2,6 +2,7 @@ const request = require('supertest');
 const express = require('express');
 const sinon = require('sinon');
 const assert = require('assert');
+const moment = require('moment');
 
 const Taskflow = require('../../../');
 const Task = require('../../../lib/db/task');
@@ -326,6 +327,21 @@ describe('/:task', () => {
           return ActivityLog.query(this.flow.db).findOne({ comment: 'testing the activity log' })
             .then(log => {
               assert.equal(log.eventName, 'status:new:updated', 'Activity log records each event');
+            });
+        });
+    });
+
+    it('doesn\'t add batched timestamps to activity log entries (regression)', () => {
+      this.flow.hook('status:*:updated', model => model.patch({ data: { thing: 'updated' } }));
+      return request(this.app)
+        .put(`/${id}/status`)
+        .set('Content-type', 'application/json')
+        .send({ status: 'updated', meta: { comment: 'testing the activity log' } })
+        .expect(200)
+        .then(() => {
+          return ActivityLog.query(this.flow.db).where({ comment: 'testing the activity log' })
+            .then(logs => {
+              assert.ok(!moment(logs[0].createdAt).isSame(moment(logs[1].createdAt)));
             });
         });
     });
