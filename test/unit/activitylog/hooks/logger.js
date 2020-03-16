@@ -15,7 +15,8 @@ describe('Hooks Activity Logger', () => {
         status: 'foo',
         comment: 'some reason'
       }
-    }
+    },
+    transaction: {}
   };
 
   const event = new EventWrapper(model);
