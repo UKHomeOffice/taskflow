@@ -387,6 +387,28 @@ describe('/:task', () => {
         });
     });
 
+    it('adds a request id to the transaction and persists through all steps in the request', () => {
+      const payload = { status: 'first', meta: { comment: 'some reason' } };
+      this.flow.hook('status:*:first', m => m.setStatus('second'));
+      this.flow.hook('status:*:second', m => m.setStatus('third'));
+      return request(this.app)
+        .put(`/${id}/status`)
+        .set('Content-type', 'application/json')
+        .send(payload)
+        .expect(200)
+        .then(() => {
+          return request(this.app)
+            .get(`/${id}`)
+            .expect(200)
+            .expect(response => {
+              assert.equal(response.body.data.status, 'third', 'The status should have been updated to third');
+              const statusLogs = response.body.data.activityLog.filter(log => log.eventName.split(':')[0] === 'status');
+              const ids = statusLogs.map(log => log.event.req);
+              assert.ok(ids.every((val, i, arr) => val === arr[0]), 'req ids did not match');
+            });
+        });
+    });
+
   });
 
   describe('POST /:task/comment', () => {
