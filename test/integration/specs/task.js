@@ -404,7 +404,7 @@ describe('/:task', () => {
               assert.equal(response.body.data.status, 'third', 'The status should have been updated to third');
               const statusLogs = response.body.data.activityLog.filter(log => log.eventName.split(':')[0] === 'status');
               const ids = statusLogs.map(log => log.event.req);
-              assert.ok(ids.every((val, i, arr) => val === arr[0]), 'req ids did not match');
+              assert.ok(ids.every((val, i, arr) => val === arr[0]), 'request ids should match');
             });
         });
     });
