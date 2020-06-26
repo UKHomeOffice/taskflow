@@ -28,7 +28,6 @@
     "mocha": "^5.2.0",
     "moment": "^2.24.0",
     "sinon": "^6.1.5",
-    "sqlite3": "^4.0.2",
     "supertest": "^3.1.0"
   },
   "dependencies": {
