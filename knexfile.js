@@ -4,6 +4,17 @@ const snakeCaseMapper = process.env.SNAKE_MAPPER ? knexSnakeCaseMappers() : {};
 
 module.exports = {
 
+  development: {
+    client: 'postgres',
+    connection: {
+      host: process.env.DATABASE_HOST || 'localhost',
+      user: process.env.DATABASE_USERNAME || 'postgres',
+      database: process.env.DATABASE_NAME || 'taskflow',
+      password: process.env.DATABASE_PASSWORD || 'test-password',
+      port: process.env.DATABASE_PORT
+    }
+  },
+
   test: {
     ...snakeCaseMapper,
     client: 'postgres',
