@@ -1,0 +1,51 @@
+
+kind: pipeline
+name: default
+type: kubernetes
+steps:
+  - name: install
+    image: node:12
+    commands:
+      - npm ci
+
+  - name: database setup
+    image: postgres
+    environment:
+      PGHOST: postgres
+      PGUSER: postgres
+      PGPASSWORD: test-password
+    commands:
+      - psql -c 'CREATE DATABASE "taskflow-test"'
+
+  - name: test
+    image: node:12
+    commands:
+      - npm test
+
+  - name: audit
+    image: node:12
+    environment:
+      NPM_AUTH_USERNAME:
+        from_secret: npm_auth_username
+      NPM_AUTH_TOKEN:
+        from_secret: npm_auth_token
+    commands:
+      - npx @lennym/ciaudit --retries 5
+
+  - name: publish
+    image: plugins/npm
+    settings:
+      token:
+        from_secret: npm_token
+      email:
+        from_secret: npm_email
+    when:
+      event:
+        - tag
+
+services:
+  - name: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test-password
