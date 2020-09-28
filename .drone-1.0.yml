@@ -5,10 +5,6 @@ type: kubernetes
 steps:
   - name: install
     image: node:12
-    environment:
-      TASKFLOW_POSTGRES_HOST: database
-      TASKFLOW_POSTGRES_USER: taskflow-test
-      TASKFLOW_POSTGRES_PASSWORD: test-password
     commands:
       - npm ci
 
@@ -46,3 +42,10 @@ steps:
     when:
       event:
         - tag
+
+services:
+  - name: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test-password
