@@ -511,4 +511,54 @@ describe('/:task', () => {
     });
 
   });
+
+  describe('PUT /:task/assign', () => {
+
+    it('sets the assignedTo property of the task', () => {
+      const profileId = 'abc-123';
+      return request(this.app)
+        .put(`/${id}/assign`)
+        .set('Content-type', 'application/json')
+        .send({ profileId })
+        .expect(() => {
+          return Task.query(this.flow.db).findById(id)
+            .then(result => {
+              assert.equal(result.assignedTo, profileId);
+            });
+        });
+    });
+
+    it('triggers `assign` hooks', () => {
+      const profileId = 'abc-123';
+      const stub = sinon.stub().resolves();
+      this.flow.hook('assign', stub);
+      return request(this.app)
+        .put(`/${id}/assign`)
+        .set('Content-type', 'application/json')
+        .send({ profileId })
+        .expect(200)
+        .then(() => {
+          assert.equal(stub.calledOnce, true, 'Hook was called exactly once');
+        });
+    });
+
+    it('does not update the `updatedAt` timestamp on the task', () => {
+      const profileId = 'abc-123';
+      return Task.query(this.flow.db).findById(id)
+        .then(before => {
+          return request(this.app)
+            .put(`/${id}/assign`)
+            .set('Content-type', 'application/json')
+            .send({ profileId })
+            .expect(200)
+            .then(() => {
+              return Task.query(this.flow.db).findById(id)
+                .then(after => {
+                  assert.deepEqual(before.updatedAt, after.updatedAt);
+                });
+            });
+        });
+    });
+
+  });
 });
