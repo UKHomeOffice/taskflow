@@ -30,7 +30,7 @@ steps:
       NPM_AUTH_TOKEN:
         from_secret: npm_auth_token
     commands:
-      - npx @lennym/ciaudit --retries 5
+      - npm audit --audit-level=high --production
 
   - name: publish
     image: plugins/npm
