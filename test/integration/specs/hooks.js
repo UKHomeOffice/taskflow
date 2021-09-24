@@ -189,6 +189,47 @@ describe('Hooks', () => {
 
     });
 
+    describe('status hooks', () => {
+
+      it('includes activity log on model', () => {
+        const stub = sinon.stub().returns(Promise.resolve());
+        this.flow.hook('status:*:one', c => c.setStatus('two'));
+        this.flow.hook('status:*:two', c => c.setStatus('three'));
+        this.flow.hook('status:*:three', stub);
+
+        return request(this.app)
+          .put(`/${id}/status`)
+          .send({ status: 'one' })
+          .expect(200)
+          .expect(response => {
+            assert.ok(stub.calledOnce, 'stub hook should have been called exactly once');
+            const model = stub.lastCall.args[0];
+            assert.ok(model.hasOwnProperty('activityLog'), 'model should have an activity log property assigned');
+            assert.deepEqual(model.activityLog.map(a => a.eventName), ['status:two:three', 'status:one:two', 'status:new:one']);
+          });
+      });
+
+      it('does not write the activity log on a hook event back into the activity log', () => {
+        this.flow.hook('status:*:one', c => c.setStatus('two'));
+
+        return request(this.app)
+          .put(`/${id}/status`)
+          .send({ status: 'one' })
+          .expect(200)
+          .then(() => {
+            return request(this.app)
+              .get(`/${id}`)
+              .expect(200)
+              .expect(response => {
+                response.body.data.activityLog.forEach(activity => {
+                  assert.ok(!activity.event.hasOwnProperty('activityLog'), 'saved events should not include the activity log');
+                });
+              });
+          });
+      });
+
+    });
+
   });
 
 });
