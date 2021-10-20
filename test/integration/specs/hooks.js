@@ -230,6 +230,56 @@ describe('Hooks', () => {
 
     });
 
+    describe('onSettled', () => {
+
+      it('is called after all hooks are complete', () => {
+        const actions = [];
+        this.flow.hook('status:*:one', () => actions.push('one'));
+        this.flow.hook('status:*:one', e => e.onSettled(() => actions.push('two')));
+        this.flow.hook('status:*:one', () => actions.push('three'));
+
+        return request(this.app)
+          .put(`/${id}/status`)
+          .send({ status: 'one' })
+          .expect(200)
+          .then(() => {
+            assert.deepEqual(actions, ['one', 'three', 'two']);
+          });
+      });
+
+      it('is called after transaction is committed', () => {
+        let complete = false;
+        this.flow.hook('status:*:one', e => e.onSettled(() => {
+          complete = e.transaction.isCompleted();
+        }));
+
+        return request(this.app)
+          .put(`/${id}/status`)
+          .send({ status: 'one' })
+          .expect(200)
+          .then(() => {
+            assert.equal(complete, true);
+          });
+      });
+
+      it('is not called if a later action throws an error', () => {
+        const stub = sinon.stub().returns(Promise.resolve());
+        this.flow.hook('status:*:one', e => e.onSettled(stub));
+        this.flow.hook('status:*:one', () => {
+          throw new Error('error');
+        });
+
+        return request(this.app)
+          .put(`/${id}/status`)
+          .send({ status: 'one' })
+          .expect(500)
+          .then(() => {
+            assert.ok(!stub.called);
+          });
+      });
+
+    });
+
   });
 
 });

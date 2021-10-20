@@ -33,10 +33,10 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
-    "knex": "^0.19.5",
+    "knex": "^0.95.11",
     "lodash": "^4.17.15",
     "minimist": "^1.2.0",
-    "objection": "^2.2.3",
+    "objection": "^2.2.17",
     "pg": "^8.6.0",
     "uuid": "^3.3.2",
     "witch": "^1.0.3"
