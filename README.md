@@ -119,16 +119,38 @@ The event object will always have the following properties:
 * `status` - the current status of the case
 * `data` - the full case data
 
-Additionally, the event object has two methods:
+#### Case mutation methods
+
+The event object exposes the following methods:
 
 * `setStatus(status)` - updates the status property of the case
 * `update(data)` - updates the data of the case
+* `patch(data)` - patches the data of the case
+* `assign(user)` - assigns the case to the defined user
 
 These methods are only available on post-event hooks, and attempting to call them on a pre-event hook will result in a warning.
 
 Calling these methods will trigger events and related hooks, so care should be taken not to create infinite recursive loops of updating data or statuses.
 
 If hooks cause updates to case statuses or data then any subsequent hooks will be called with the updated values.
+
+#### Side-effects and downstream services
+
+If a hook needs to perform a side-effect, such as calling an external service in response to a hook event, it is recommended to wait for the request to complete so that side-effects are only applied once the database transaction is resolved.
+
+To do this you can wrap the side-effect in an `onSettled` call:
+
+```js
+flow.hook('update', event => {
+  event.onSettled(() => {
+    // this is only called once all updates are complete and the database transaction is commited
+  });
+});
+```
+
+#### Redirecting to another case
+
+If you wan to prevent the creation of a new case, and instead refer the client to a pre-existing case, you can call `event.redirect(id | { id })` in a `pre-create` hook.
 
 ## Decorators
 
