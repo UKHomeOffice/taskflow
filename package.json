@@ -1,6 +1,6 @@
 {
   "name": "@ukhomeoffice/taskflow",
-  "version": "2.6.1",
+  "version": "2.7.0",
   "description": "Proof of concept for workflow task management",
   "main": "index.js",
   "scripts": {
