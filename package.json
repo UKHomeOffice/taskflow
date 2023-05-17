@@ -1,5 +1,5 @@
 {
-  "name": "@ukhomeoffice/taskflow",
+  "name": "@ukhomeoffice/asl-taskflow",
   "version": "2.7.0",
   "description": "Proof of concept for workflow task management",
   "main": "index.js",
@@ -42,6 +42,6 @@
     "witch": "^1.0.3"
   },
   "publishConfig": {
-    "access": "public"
+    "@ukhomeoffice:registry": "https://npm.pkg.github.com"
   }
 }
