@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/UKHomeOffice/taskflow#readme",
   "devDependencies": {
+    "audit-ci": "^6.5.0",
     "dotenv": "^6.0.0",
     "eslint": "^5.16.0",
     "eslint-config-lennym": "^2.0.1",
