@@ -1,4 +1,3 @@
-
 kind: pipeline
 name: default
 type: kubernetes
@@ -30,8 +29,7 @@ steps:
       GITHUB_AUTH_TOKEN:
         from_secret: github_token
     commands:
-      - npm audit --audit-level=high --production
-
+      - npm run test:audit
   - name: publish
     image: node:18
     environment:
