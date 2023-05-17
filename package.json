@@ -1,6 +1,6 @@
 {
   "name": "@ukhomeoffice/asl-taskflow",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Proof of concept for workflow task management",
   "main": "index.js",
   "scripts": {
