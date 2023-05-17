@@ -43,5 +43,5 @@
   },
   "publishConfig": {
     "@ukhomeoffice:registry": "https://npm.pkg.github.com"
-  },
+  }
 }
