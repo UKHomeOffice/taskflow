@@ -5,7 +5,7 @@ steps:
   - name: install
     image: node:18
     commands:
-      - npm ci
+      - npm ci --legacy-peer-deps
 
   - name: database setup
     image: postgres
