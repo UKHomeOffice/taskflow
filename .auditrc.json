@@ -1,11 +1,13 @@
 {
   "comments": [
-    "GHSA-4jv9-3563-23j3 - this is a SQL injection vulnerability that only affects MySQL see https://github.com/advisories/GHSA-4jv9-3563-23j3, https://github.com/knex/knex/issues/1227 & https://www.ghostccamm.com/blog/knex_sqli/"
+    "GHSA-4jv9-3563-23j3 - this is a SQL injection vulnerability that only affects MySQL see https://github.com/advisories/GHSA-4jv9-3563-23j3, https://github.com/knex/knex/issues/1227 & https://www.ghostccamm.com/blog/knex_sqli/",
+    "GHSA-hrpp-h998-j3pp: qs vulnerable to Prototype Pollution - https://github.com/advisories/GHSA-hrpp-h998-j3pp",
   ],
   "allowlist": [
     "GHSA-4jv9-3563-23j3",
     "GHSA-vh95-rmgr-6w4m",
     "GHSA-4jv9-3563-23j3",
     "GHSA-f8q6-p94x-37v3",
+    "GHSA-hrpp-h998-j3pp",
   ]
 }
