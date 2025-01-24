@@ -5,10 +5,10 @@ exports.up = function(knex, Promise) {
     .dropTableIfExists('activity_log')
     .createTable('activity_log', table => {
       table.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'));
-      table.uuid('case_id').references('id').inTable('cases').notNull();
+      table.uuid('case_id').references('id').inTable('cases').notNullable();
       table.uuid('changed_by');
-      table.string('event_name').notNull();
-      table.jsonb('event').notNull();
+      table.string('event_name').notNullable();
+      table.jsonb('event').notNullable();
       table.string('comment');
       table.timestamps(false, true);
     });
