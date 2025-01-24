@@ -1,6 +1,6 @@
 {
   "name": "@ukhomeoffice/asl-taskflow",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Proof of concept for workflow task management",
   "main": "index.js",
   "scripts": {
@@ -40,7 +40,7 @@
     "minimist": "^1.2.0",
     "objection": "^3.1.5",
     "pg": "^8.6.0",
-    "uuid": "^3.3.2",
+    "uuid": "^8.3.2",
     "witch": "^1.0.3"
   },
   "publishConfig": {

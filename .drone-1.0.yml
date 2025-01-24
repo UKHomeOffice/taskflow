@@ -4,8 +4,13 @@ type: kubernetes
 steps:
   - name: install
     image: node:18
+    environment:
+      ART_AUTH_TOKEN:
+        from_secret: art_auth_token
+      GITHUB_AUTH_TOKEN:
+        from_secret: github_token
     commands:
-      - npm ci --legacy-peer-deps
+      - npm ci
 
   - name: database setup
     image: postgres
