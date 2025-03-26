@@ -3,7 +3,7 @@ name: default
 type: kubernetes
 steps:
   - name: install
-    image: node:18
+    image: node:22.14.0
     environment:
       ART_AUTH_TOKEN:
         from_secret: art_auth_token
@@ -27,7 +27,7 @@ steps:
       - npm test
 
   - name: audit
-    image: node:18
+    image: node:22.14.0
     environment:
       ART_AUTH_TOKEN:
         from_secret: art_auth_token
@@ -36,7 +36,7 @@ steps:
     commands:
       - npm run test:audit
   - name: publish
-    image: node:18
+    image: node:22.14.0
     environment:
       ART_AUTH_TOKEN:
         from_secret: art_auth_token
